@@ -60,11 +60,12 @@
         }
         
         .app-screen {
-            flex-grow: 1; /* Ocupa todo o espaço vertical disponível */
+            flex-grow: 1; 
             display: none;
             flex-direction: column;
             opacity: 0;
             transition: opacity 0.4s ease-in-out;
+            overflow: hidden; /* CORREÇÃO: Garante que o conteúdo não vaze */
         }
 
         .screen-active {
@@ -106,7 +107,6 @@
             margin-bottom: 1rem;
         }
         
-        /* Oculta a label visualmente mas a mantém para leitores de tela */
         .input-group label {
             position: absolute;
             width: 1px;
@@ -167,8 +167,9 @@
 
         /* --- TELA PRINCIPAL (HOME) E OUTRAS TELAS --- */
         .content-area {
-            overflow-y: auto;
-            padding-bottom: 90px; /* Espaço para a barra de navegação */
+            flex-grow: 1; /* CORREÇÃO: Faz a área ocupar o espaço disponível */
+            overflow-y: auto; /* CORREÇÃO: Ativa a rolagem vertical quando necessário */
+            padding-bottom: 90px;
         }
         
         .header-profile {
@@ -206,7 +207,6 @@
             border: 1px solid var(--cor-borda-sutil);
         }
 
-        /* Card de Progresso */
         .main-card h3 {
             margin-top: 0;
             padding-bottom: 0.8rem;
@@ -216,7 +216,7 @@
         .belt-display {
             display: flex;
             width: 100%;
-            height: 2.5rem; /* Altura fixa para consistência */
+            height: 2.5rem;
             background-color: var(--cor-faixa-azul);
             margin: 1.2rem 0;
             border-radius: 4px;
@@ -273,7 +273,6 @@
             color: var(--cor-texto-secundaria);
         }
         
-        /* Ações Rápidas */
         .action-grid {
             display: flex;
             justify-content: space-between;
@@ -301,7 +300,6 @@
         .action-card p { font-weight: 500; }
         .action-card i { font-size: clamp(1.5rem, 6vw, 2.2rem); color: var(--cor-acento); margin-bottom: 0.5rem; }
 
-        /* Card de Informação */
         .info-card {
             background-color: var(--cor-texto-principal);
             color: var(--cor-fundo-app);
@@ -311,7 +309,9 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
-        .info-card h4 { color: var(--cor-acento); margin-top: 0; }
+        .info-card h4 { color: var(--cor-acento); margin-top: 0; margin-bottom: 0.5rem; }
+        .info-card p { margin-bottom: 1rem; }
+        .info-card p:last-child { margin-bottom: 0; }
         .info-card p strong { color: var(--cor-acento); }
 
         .video-card img {
@@ -322,7 +322,6 @@
             border: 2px solid var(--cor-acento);
         }
         
-        /* --- MENU DE NAVEGAÇÃO INFERIOR --- */
         .bottom-nav-bar {
             position: absolute;
             bottom: 0;
@@ -383,9 +382,8 @@
             transform: translateX(-50%) scale(1.1);
         }
         
-        /* Placeholder para centralizar o botão FAB */
         .nav-item-placeholder {
-            flex-grow: 1.2; /* Dê um pouco mais de espaço para o botão central */
+            flex-grow: 1.2;
         }
     </style>
 </head>
@@ -466,11 +464,13 @@
                 <h2 class="section-title">Avisos e Calendário</h2>
                 <div class="info-card">
                     <h4><i class="fas fa-bullhorn"></i> Próximo Campeonato!</h4>
-                    <p><strong>23/NOVEMBRO - ATENÇÃO:</strong> Inscrições abertas para o SENOGI. Não perca o prazo!.</p>
+                    <p><strong>23/NOVEMBRO - ATENÇÃO</strong> Inscrições abertas para o SENOGI. Não perca o prazo!.</p>
+                    
                     <h4><i class="fas fa-bullhorn"></i> Próximo Campeonato!</h4>
-                    <p><strong>14/DEZEMBRO - ATENÇÃO:</strong> Inscrições abertas para o BBC OPEN DE JIU JITSU. Não perca o prazo!.</p>
+                    <p><strong>14/DEZEMBRO - ATENÇÃO</strong> Inscrições abertas para o BBC OPEN DE JIU JITSU. Não perca o prazo!.</p>
+                    
                     <h4><i class="fas fa-bullhorn"></i> Graduação JIU-JITSU!</h4>
-                    <p><strong>19/DEZEMBRO - ATENÇÃO:</strong> Local: Toyota Toyolex - Caicó/RN | 19:00h.</p>
+                    <p><strong>19/DEZEMBRO - ATENÇÃO</strong> Local: Toyota Toyolex - Caicó/RN | 19:00h.</p>
                 </div>
 
                 <h2 class="section-title">Conteúdo Exclusivo</h2>
@@ -509,7 +509,6 @@
         const homeScreenContent = document.querySelector('#home-screen .content-area');
         const qrCodeBtn = document.querySelector('.fab-qr-code');
 
-        // Função para mostrar uma tela específica e esconder as outras
         const showScreen = (screenId) => {
             screens.forEach(screen => {
                 screen.classList.remove('screen-active');
@@ -520,7 +519,6 @@
             }
         };
 
-        // Simulação de login
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if (emailCpf.value && password.value) {
@@ -530,14 +528,12 @@
             }
         });
 
-        // Lógica de navegação
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
                 const screenId = item.dataset.screen;
                 
                 if (screenId) {
-                    // Atualiza o estado ativo no menu inferior
                     if(item.classList.contains('nav-item')) {
                         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                         item.classList.add('active');
@@ -545,7 +541,6 @@
                     
                     showScreen(screenId);
 
-                    // Rola para o topo ao navegar para a home
                     if (screenId === 'home-screen' && homeScreenContent) {
                         homeScreenContent.scrollTop = 0;
                     }
@@ -553,10 +548,8 @@
             });
         });
         
-        // Ação do botão QR Code
         qrCodeBtn.addEventListener('click', () => {
             console.log('Botão QR Code clicado. Implementar lógica de câmera.');
-            // Em um app real, aqui você chamaria a API da câmera do dispositivo.
         });
     });
 </script>
