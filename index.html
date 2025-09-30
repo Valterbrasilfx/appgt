@@ -6,184 +6,226 @@
     <title>Gadelha Team</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        /* Variáveis de Cores */
+        /* --- VARIÁVEIS E CONFIGURAÇÕES GLOBAIS --- */
         :root {
-            --cor-fundo-app: #0A0A0A; /* Preto Profundo (Home Screen) */
-            --cor-card-fundo: #1C1C1C; /* Cinza Escuro para cards */
-            --cor-acento: #E30613; /* Vermelho Vibrante (Acento Principal) */
-            --cor-texto-principal: #FFFFFF; /* Branco Puro */
-            --cor-texto-secundaria: #B0B0B0; /* Cinza Claro para detalhes */
-            --cor-faixa-azul: #007FFF; 
+            --cor-fundo-app: #0A0A0A;
+            --cor-card-fundo: #1C1C1E;
+            --cor-acento: #E30613;
+            --cor-texto-principal: #FFFFFF;
+            --cor-texto-secundaria: #B0B0B0;
+            --cor-faixa-azul: #007FFF;
             --cor-faixa-ponteira: #000000;
-            --cor-texto-escuro: #0A0A0A; /* Texto para fundo branco */
+            --cor-texto-escuro: #0A0A0A;
+            --cor-borda-sutil: #333333;
         }
 
-        /* -------------------- ESTILOS GERAIS E RESPONSIVIDADE -------------------- */
-        body, html {
+        *, *::before, *::after {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--cor-fundo-app);
-            color: var(--cor-texto-principal);
-            height: 100%;
-            width: 100%;
-            overflow: hidden; 
         }
 
-        .app-screen {
+        html {
+            font-size: 16px; /* Base para unidades rem */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--cor-fundo-app);
+            color: var(--cor-texto-principal);
             height: 100vh;
-            /* CRUCIAL PARA CELULAR: Usar 100vw e max-width juntos e centralizar */
-            width: 100vw; 
-            max-width: 500px;
-            margin: 0 auto; /* Centraliza o bloco do app no centro da tela do navegador/dispositivo */
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* --- LAYOUT PRINCIPAL E TELAS --- */
+        .app-container {
+            height: 100vh;
+            width: 100vw;
+            max-width: 500px; /* Largura máxima para celulares */
+            margin: 0 auto;
             position: relative;
             background-color: var(--cor-fundo-app);
-            display: none; 
+            display: flex;
             flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        
+        /* Adaptação para tablets */
+        @media (min-width: 768px) {
+            .app-container {
+                max-width: 600px;
+            }
+        }
+        
+        .app-screen {
+            flex-grow: 1; /* Ocupa todo o espaço vertical disponível */
+            display: none;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
         }
 
         .screen-active {
             display: flex;
+            opacity: 1;
         }
-        
-        /* Fontes Adaptativas */
-        h1 { font-size: 8vw; }
-        h2 { font-size: 5vw; }
-        h3 { font-size: 4.5vw; }
-        p { font-size: 3.5vw; }
 
-        /* -------------------- PÁGINA DE LOGIN (BRANCA E CENTRALIZADA PERFEITA) -------------------- */
+        /* --- TIPOGRAFIA FLUÍDA --- */
+        h1 { font-size: clamp(1.8rem, 8vw, 2.5rem); }
+        h2 { font-size: clamp(1.2rem, 5vw, 1.8rem); }
+        h3 { font-size: clamp(1.1rem, 4.5vw, 1.6rem); }
+        h4 { font-size: clamp(1rem, 4vw, 1.4rem); }
+        p, a, input, button { font-size: clamp(0.9rem, 3.5vw, 1.1rem); }
+        
+
+        /* --- PÁGINA DE LOGIN --- */
         #login-screen {
-            background-color: var(--cor-texto-principal); 
-            /* Flexbox para centralização absoluta */
-            justify-content: center; /* Centraliza Verticalmente */
-            align-items: center; /* Centraliza Horizontalmente */
-            padding: 5% 5%; 
+            background-color: var(--cor-texto-principal);
+            color: var(--cor-texto-escuro);
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
             text-align: center;
         }
         
-        .login-form { 
-            width: 85%; 
-            color: var(--cor-texto-escuro); 
-            /* Centraliza o formulário dentro do #login-screen (flex item) */
-            margin: 0 auto; 
-        }
-
-        .logo-placeholder {
-            width: 100%; 
-            height: auto;
-            margin: 0 auto 5vh; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .login-form {
+            width: 100%;
+            max-width: 350px;
         }
         
-        .logo-placeholder img {
-            max-width: 50%; 
+        .logo-container img {
+            max-width: 50%;
             height: auto;
-            margin-bottom: 20px;
-            display: block; 
-            margin-left: auto; 
-            margin-right: auto; 
+            margin-bottom: 2rem;
+        }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        /* Oculta a label visualmente mas a mantém para leitores de tela */
+        .input-group label {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
         .input-field {
             width: 100%;
-            padding: 4vw;
-            margin-bottom: 3vw;
-            background-color: #EEEEEE; 
-            border: 1px solid var(--cor-acento);
-            color: var(--cor-texto-escuro); 
+            padding: 1rem;
+            background-color: #EEEEEE;
+            border: 2px solid transparent;
+            color: var(--cor-texto-escuro);
             border-radius: 8px;
-            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--cor-acento);
         }
 
         .btn-primary {
             width: 100%;
-            padding: 4vw;
+            padding: 1rem;
             background-color: var(--cor-acento);
             color: var(--cor-texto-principal);
             border: none;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 5vw;
-            transition: opacity 0.3s;
+            margin-top: 1rem;
+            transition: opacity 0.3s, transform 0.2s;
         }
         
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
         .link-forgot {
-            color: var(--cor-texto-escuro); 
-            display: block; 
-            margin-top: 5vw;
-            font-size: 3.5vw;
+            color: var(--cor-texto-escuro);
+            display: block;
+            margin-top: 1.5rem;
             opacity: 0.8;
+            text-decoration: none;
+        }
+        .link-forgot:hover {
+            text-decoration: underline;
         }
 
-        /* -------------------- PÁGINA INICIAL (HOME - PRETO) -------------------- */
-        #home-screen {
-            padding-bottom: 80px; 
-            overflow-y: auto; 
+        /* --- TELA PRINCIPAL (HOME) E OUTRAS TELAS --- */
+        .content-area {
+            overflow-y: auto;
+            padding-bottom: 90px; /* Espaço para a barra de navegação */
         }
-
+        
         .header-profile {
             display: flex;
             align-items: center;
-            padding: 4vw;
-            background-color: #000;
-            border-bottom: 2px solid var(--cor-acento); 
+            padding: 1.5rem;
+            background: linear-gradient(180deg, #111 0%, #000 100%);
+            border-bottom: 2px solid var(--cor-acento);
         }
 
         .profile-pic {
-            width: 15vw;
-            height: 15vw;
+            width: clamp(60px, 15vw, 80px);
+            height: clamp(60px, 15vw, 80px);
             border-radius: 50%;
-            border: 3px solid var(--cor-acento); 
-            margin-right: 4vw;
+            border: 3px solid var(--cor-acento);
+            margin-right: 1rem;
             object-fit: cover;
         }
 
-        .student-info h2 {
-            margin: 0;
-            font-size: 5vw;
-        }
+        .student-info h2 { margin: 0; }
+        .student-info p { margin: 0; color: var(--cor-acento); font-weight: bold; }
 
-        .student-info p {
-            margin: 0;
-            font-size: 3.5vw;
-            color: var(--cor-acento);
+        .section-title {
+            margin: 1.5rem 1.5rem 1rem;
+            border-left: 5px solid var(--cor-acento);
+            padding-left: 0.8rem;
             font-weight: bold;
         }
-
-        /* Quadro de Evolução da Faixa (Design Original Retomado) */
-        .belt-progress-card {
-            background-color: var(--cor-card-fundo); 
-            margin: 4vw;
-            padding: 4vw;
-            border-radius: 10px;
-            border: 1px solid #333;
-        }
-
-        .belt-progress-card h3 {
-            color: var(--cor-texto-principal); 
-            margin-top: 0;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-        }
         
+        .main-card {
+            background-color: var(--cor-card-fundo);
+            margin: 0 1.5rem 1.5rem;
+            padding: 1.2rem;
+            border-radius: 12px;
+            border: 1px solid var(--cor-borda-sutil);
+        }
+
+        /* Card de Progresso */
+        .main-card h3 {
+            margin-top: 0;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--cor-borda-sutil);
+        }
+
         .belt-display {
             display: flex;
             width: 100%;
-            height: 8vw;
+            height: 2.5rem; /* Altura fixa para consistência */
             background-color: var(--cor-faixa-azul);
-            margin-top: 4vw;
-            margin-bottom: 4vw;
+            margin: 1.2rem 0;
             border-radius: 4px;
             position: relative;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
 
         .belt-tip {
-            width: 18%; 
+            width: 20%;
             height: 100%;
             background-color: var(--cor-faixa-ponteira);
             position: absolute;
@@ -191,318 +233,333 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 0 1vw;
-            box-sizing: border-box;
+            padding: 0 0.5rem;
         }
 
         .belt-degree {
-            width: 1.5vw;
-            height: 6vw;
-            background-color: var(--cor-texto-principal); 
+            width: 0.4rem;
+            height: 80%;
+            background-color: var(--cor-texto-principal);
             border-radius: 1px;
         }
 
         .belt-stats {
             display: flex;
-            justify-content: space-between;
-            margin-top: 4vw;
-            gap: 2vw;
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
         .stats-box {
             text-align: center;
-            padding: 3vw;
-            flex-basis: 50%;
+            padding: 1rem;
+            flex: 1;
             border-radius: 8px;
             background-color: #000;
-            border: 1px solid var(--cor-texto-principal); 
+            border: 1px solid var(--cor-borda-sutil);
         }
         
-        .stats-box:nth-child(2) {
-             border: 2px solid var(--cor-acento); 
+        .stats-box.highlight {
+            border: 2px solid var(--cor-acento);
         }
 
         .stats-box h3 {
-            margin: 5px 0;
+            margin: 0.2rem 0;
             color: var(--cor-acento);
-            font-size: 6vw;
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
         }
-
         .stats-box p {
             margin: 0;
-            font-size: 3vw;
+            font-size: clamp(0.75rem, 3vw, 0.9rem);
             color: var(--cor-texto-secundaria);
         }
-
-        /* Seções de Ação Rápida e Informações */
-        .section-title {
-            color: var(--cor-texto-principal); 
-            margin: 5vw 4vw 3vw;
-            border-left: 5px solid var(--cor-acento); 
-            padding-left: 10px;
-            font-size: 4.5vw;
-            font-weight: bold;
-        }
-
+        
+        /* Ações Rápidas */
         .action-grid {
             display: flex;
-            justify-content: space-around;
-            margin: 0 4vw;
-            gap: 3vw;
+            justify-content: space-between;
+            margin: 0 1.5rem;
+            gap: 1rem;
         }
 
         .action-card {
             background-color: var(--cor-card-fundo);
             flex: 1;
-            padding: 4vw 2vw;
+            padding: 1rem 0.5rem;
             border-radius: 8px;
             text-align: center;
-            border: 1px solid #333;
-            transition: border-color 0.3s;
-        }
-        
-        .action-card p {
-            font-size: 3vw;
+            border: 1px solid var(--cor-borda-sutil);
+            transition: border-color 0.3s, transform 0.3s;
+            text-decoration: none;
             color: var(--cor-texto-principal);
         }
-
-        .action-card i {
-            font-size: 6vw;
-            color: var(--cor-acento);
-            margin-bottom: 5px;
+        
+        .action-card:hover {
+            border-color: var(--cor-acento);
+            transform: translateY(-5px);
         }
 
+        .action-card p { font-weight: 500; }
+        .action-card i { font-size: clamp(1.5rem, 6vw, 2.2rem); color: var(--cor-acento); margin-bottom: 0.5rem; }
+
+        /* Card de Informação */
         .info-card {
-            background-color: var(--cor-texto-principal); 
-            color: var(--cor-fundo-app); 
-            margin: 4vw;
-            padding: 4vw;
+            background-color: var(--cor-texto-principal);
+            color: var(--cor-fundo-app);
+            margin: 0 1.5rem 1.5rem;
+            padding: 1.2rem;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
-        .info-card h4 {
-            color: var(--cor-acento);
-            margin-top: 0;
-            font-size: 4vw;
-        }
-        
-        .info-card p {
-            font-size: 3.5vw;
-        }
+        .info-card h4 { color: var(--cor-acento); margin-top: 0; }
+        .info-card p strong { color: var(--cor-acento); }
 
         .video-card img {
             width: 100%;
             height: auto;
             border-radius: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 0.8rem;
             border: 2px solid var(--cor-acento);
         }
         
-        /* -------------------- MENU INFERIOR FLUTUANTE -------------------- */
+        /* --- MENU DE NAVEGAÇÃO INFERIOR --- */
         .bottom-nav-bar {
-            position: fixed;
+            position: absolute;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            height: 15vw;
-            background-color: #000000;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            background-color: #000;
             display: flex;
             justify-content: space-around;
             align-items: center;
             box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.7);
-            max-width: 500px;
-            width: 100%;
-            z-index: 100;
+            z-index: 1000;
         }
 
         .nav-item {
-            color: var(--cor-texto-principal);
-            text-decoration: none;
+            color: var(--cor-texto-secundaria);
+            background: none;
+            border: none;
             text-align: center;
-            font-size: 2.8vw;
-            padding: 0 1vw;
+            font-size: clamp(0.7rem, 2.8vw, 0.8rem);
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             flex-grow: 1;
+            cursor: pointer;
+            transition: color 0.3s;
+            height: 100%;
         }
-
-        .nav-item i {
-            font-size: 5vw;
-            margin-bottom: 3px;
+        
+        .nav-item:hover {
+            color: var(--cor-texto-principal);
         }
-
-        .nav-item.active {
-            color: var(--cor-acento);
-        }
+        .nav-item i { font-size: clamp(1.2rem, 5vw, 1.6rem); margin-bottom: 5px; }
+        .nav-item.active { color: var(--cor-acento); }
 
         .fab-qr-code {
-            width: 14vw;
-            height: 14vw;
+            width: 60px;
+            height: 60px;
             background-color: var(--cor-acento);
             color: var(--cor-texto-principal);
             border: 4px solid var(--cor-fundo-app);
             border-radius: 50%;
             position: absolute;
-            bottom: 3vw; 
+            bottom: 40px; 
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 6vw;
+            font-size: 1.8rem;
             box-shadow: 0 4px 15px rgba(227, 6, 19, 0.7);
             cursor: pointer;
-            z-index: 10;
+            z-index: 1001;
+            transition: transform 0.3s ease;
+        }
+        .fab-qr-code:hover {
+            transform: translateX(-50%) scale(1.1);
         }
         
-        /* Ocultar placeholder de navegação */
-        .bottom-nav-bar a[style*="visibility: hidden"] {
-            visibility: hidden !important; 
-            flex-grow: 1;
+        /* Placeholder para centralizar o botão FAB */
+        .nav-item-placeholder {
+            flex-grow: 1.2; /* Dê um pouco mais de espaço para o botão central */
         }
     </style>
 </head>
 <body>
 
+<div class="app-container">
+    
     <div id="login-screen" class="app-screen screen-active">
-        
-        <div class="login-logo">
-            <div class="logo-placeholder">
+        <div class="login-form">
+            <div class="logo-container">
                 <img src="img/dez.png" alt="LOGO GADELHA TEAM"> 
             </div>
+            <form id="login-form-element">
+                <div class="input-group">
+                    <label for="email-cpf">Email ou CPF</label>
+                    <input type="text" id="email-cpf" placeholder="Email ou CPF" required class="input-field">
+                </div>
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" placeholder="Senha" required class="input-field">
+                </div>
+                <button id="login-btn" type="submit" class="btn-primary">ENTRAR</button>
+                <a href="#" class="link-forgot">Esqueci a senha</a>
+            </form>
         </div>
-        
-        <form class="login-form">
-            <input type="text" id="email-cpf" placeholder="Email ou CPF" required class="input-field">
-            <input type="password" id="password" placeholder="Senha" required class="input-field">
-            <button id="login-btn" type="submit" class="btn-primary">ENTRAR</button>
-            <a href="#" class="link-forgot">Esqueci a senha</a>
-        </form>
     </div>
 
     <div id="home-screen" class="app-screen">
-        
-        <div class="header-profile">
-            <img src="img/IMG_0249 2.jpg" alt="Foto do Aluno" class="profile-pic">
-            <div class="student-info">
-                <h2>Valter Brasil</h2>
-                <p>Jiu Jitsu - Padrão</p>
-            </div>
-        </div>
-
-        <div class="belt-progress-card">
-            <h3><i class="fas fa-medal" style="color: var(--cor-acento);"></i> Seu Progresso Atual</h3>
-            
-            <div class="belt-display">
-                <div class="belt-tip">
-                    <div class="belt-degree"></div> 
-                    <div class="belt-degree"></div> 
+        <div class="content-area">
+            <header class="header-profile">
+                <img src="img/IMG_0249 2.jpg" alt="Foto do Aluno Valter Brasil" class="profile-pic">
+                <div class="student-info">
+                    <h2>Valter Brasil</h2>
+                    <p>Jiu Jitsu - Padrão</p>
                 </div>
-            </div>
+            </header>
 
-            <div class="belt-stats">
-                <div class="stats-box">
-                    <p>Aulas Concluídas na Faixa:</p>
-                    <h3>100</h3>
+            <main>
+                <div class="main-card">
+                    <h3><i class="fas fa-medal" style="color: var(--cor-acento);"></i> Seu Progresso Atual</h3>
+                    <div class="belt-display">
+                        <div class="belt-tip">
+                            <div class="belt-degree"></div> 
+                            <div class="belt-degree"></div> 
+                        </div>
+                    </div>
+                    <div class="belt-stats">
+                        <div class="stats-box">
+                            <p>Aulas na Faixa</p>
+                            <h3>100</h3>
+                        </div>
+                        <div class="stats-box highlight">
+                            <p>Próxima Graduação</p>
+                            <h3>+50</h3>
+                        </div>
+                    </div>
+                    <button class="btn-primary" style="margin-top: 1.5rem;">
+                        <i class="fas fa-chart-line"></i> VEJA SUA EVOLUÇÃO
+                    </button>
                 </div>
-                <div class="stats-box">
-                    <p>Aulas para Próxima Graduação:</p>
-                    <h3>+50</h3>
+
+                <h2 class="section-title">Ações Rápidas</h2>
+                <div class="action-grid">
+                    <a href="#" class="action-card" data-screen="debits-screen">
+                        <i class="fas fa-dollar-sign"></i>
+                        <p>Seus Débitos</p>
+                    </a>
+                    <a href="#" class="action-card" data-screen="schedule-screen">
+                        <i class="fas fa-calendar-check"></i>
+                        <p>Agendar Treino</p>
+                    </a>
+                    <a href="#" class="action-card">
+                        <i class="fas fa-store"></i>
+                        <p>Loja Online</p>
+                    </a>
                 </div>
-            </div>
 
-            <button class="btn-primary" style="width: 100%; margin-top: 5vw;">
-                <i class="fas fa-chart-line"></i> VEJA SUA EVOLUÇÃO
-            </button>
-        </div>
+                <h2 class="section-title">Avisos e Calendário</h2>
+                <div class="info-card">
+                    <h4><i class="fas fa-bullhorn"></i> Próximo Campeonato!</h4>
+                    <p><strong>23/NOVEMBRO - ATENÇÃO:</strong> Inscrições abertas para o SENOGI. Não perca o prazo!.</p>
+                    <h4><i class="fas fa-bullhorn"></i> Próximo Campeonato!</h4>
+                    <p><strong>14/DEZEMBRO - ATENÇÃO:</strong> Inscrições abertas para o BBC OPEN DE JIU JITSU. Não perca o prazo!.</p>
+                    <h4><i class="fas fa-bullhorn"></i> Graduação JIU-JITSU!</h4>
+                    <p><strong>19/DEZEMBRO - ATENÇÃO:</strong> Local: Toyota Toyolex - Caicó/RN | 19:00h.</p>
+                </div>
 
-        <div class="section-title">Ações Rápidas</div>
-        <div class="action-grid">
-            <div class="action-card">
-                <i class="fas fa-dollar-sign"></i>
-                <p>Seus <b>Débitos</b></p>
-            </div>
-            <div class="action-card">
-                <i class="fas fa-calendar-check"></i>
-                <p><b>Agendar</b> Treino</p>
-            </div>
-            <div class="action-card">
-                <i class="fas fa-store"></i>
-                <p><b>Loja</b> Online</p>
-            </div>
-        </div>
-
-        <div class="section-title">Avisos e Calendário</div>
-        <div class="info-card">
-            <h4><i class="fas fa-bullhorn" style="color: var(--cor-acento);"></i> Próximo Campeonato!</h4>
-            <p style="color: var(--cor-acento); font-weight: bold;">23/NOVEMBRO - ATENÇÃO:</p>
-            <p>Inscrições abertas para o SENOGI. Não perca o prazo!</p>
-        </div>
-         <div class="info-card">
-            <h4><i class="fas fa-bullhorn" style="color: var(--cor-acento);"></i> Próximo Campeonato!</h4>
-            <p style="color: var(--cor-acento); font-weight: bold;">14/DEZEMBRO - ATENÇÃO:</p>
-            <p>Inscrições abertas para o BBC OPEN DE JIU JITSU. Não perca o prazo!</p>
-        </div>
-        <div class="info-card">
-            <h4><i class="fas fa-bullhorn" style="color: var(--cor-acento);"></i> Graduação Jiu-Jitsu!</h4>
-            <p style="color: var(--cor-acento); font-weight: bold;">19/DEZEMBRO - ATENÇÃO:</p>
-            <p>Graduação das turmas de jiu-jitsu, na Toyolex. PARTICIPE!</p>
-        </div>
-
-        <div class="section-title">Conteúdo Exclusivo</div>
-        <div class="info-card video-card">
-            <h4><i class="fas fa-video" style="color: var(--cor-acento);"></i> Último Vídeo</h4>
-            <img src="https://via.placeholder.com/400x200?text=Video+de+Aula+Recente" alt="Miniatura do Vídeo">
-            <p>Técnica da Semana: Como sair do 100Kg com eficiência (Aula 12)</p>
-        </div>
-
-        <div class="bottom-nav-bar">
-            <a href="#" class="nav-item active"><i class="fas fa-home"></i> Home</a>
-            <a href="#" class="nav-item"><i class="fas fa-chart-line"></i> Evolução</a>
-            <a href="#" class="nav-item" style="visibility: hidden;">Placeholder</a> 
-            <a href="#" class="nav-item"><i class="fas fa-calendar-alt"></i> Agendar</a>
-            <a href="#" class="nav-item"><i class="fas fa-money-check-alt"></i> Débitos</a>
-            
-            <button class="fab-qr-code" onclick="alert('Funcionalidade de Câmera/QR Code - Necessita de JavaScript/API nativa.')"><i class="fas fa-qrcode"></i></button>
+                <h2 class="section-title">Conteúdo Exclusivo</h2>
+                <div class="info-card video-card">
+                    <h4><i class="fas fa-video"></i> Técnica da Semana</h4>
+                    <img src="https://via.placeholder.com/400x200/E30613/FFFFFF?text=Gadelha+Team" alt="Miniatura do Vídeo">
+                    <p>Como sair do 100Kg com eficiência (Aula 12)</p>
+                </div>
+            </main>
         </div>
     </div>
+    
+    <div id="evolution-screen" class="app-screen" style="justify-content: center; align-items: center;"><h1>Página de Evolução</h1></div>
+    <div id="schedule-screen" class="app-screen" style="justify-content: center; align-items: center;"><h1>Página de Agendamento</h1></div>
+    <div id="debits-screen" class="app-screen" style="justify-content: center; align-items: center;"><h1>Página de Débitos</h1></div>
 
-    <script>
-        const loginBtn = document.getElementById('login-btn');
-        const loginScreen = document.getElementById('login-screen');
-        const homeScreen = document.getElementById('home-screen');
+    <nav class="bottom-nav-bar">
+        <button class="nav-item active" data-screen="home-screen"><i class="fas fa-home"></i> Home</button>
+        <button class="nav-item" data-screen="evolution-screen"><i class="fas fa-chart-line"></i> Evolução</button>
+        <div class="nav-item-placeholder"></div>
+        <button class="nav-item" data-screen="schedule-screen"><i class="fas fa-calendar-alt"></i> Agendar</button>
+        <button class="nav-item" data-screen="debits-screen"><i class="fas fa-money-check-alt"></i> Débitos</button>
+    </nav>
+    <button class="fab-qr-code" aria-label="Escanear QR Code"><i class="fas fa-qrcode"></i></button>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginForm = document.getElementById('login-form-element');
         const emailCpf = document.getElementById('email-cpf');
         const password = document.getElementById('password');
-        const navItems = document.querySelectorAll('.nav-item');
+        
+        const navItems = document.querySelectorAll('.nav-item, .action-card[data-screen]');
+        const screens = document.querySelectorAll('.app-screen');
+        const homeScreenContent = document.querySelector('#home-screen .content-area');
+        const qrCodeBtn = document.querySelector('.fab-qr-code');
 
-        loginBtn.addEventListener('click', (e) => {
+        // Função para mostrar uma tela específica e esconder as outras
+        const showScreen = (screenId) => {
+            screens.forEach(screen => {
+                screen.classList.remove('screen-active');
+            });
+            const activeScreen = document.getElementById(screenId);
+            if (activeScreen) {
+                activeScreen.classList.add('screen-active');
+            }
+        };
+
+        // Simulação de login
+        loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-
-            // Simulação de login: se os campos não estiverem vazios, navega
             if (emailCpf.value && password.value) {
-                loginScreen.classList.remove('screen-active');
-                homeScreen.classList.add('screen-active');
+                showScreen('home-screen');
             } else {
                 alert('Por favor, preencha todos os campos.');
             }
         });
 
+        // Lógica de navegação
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
-                navItems.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                
-                // Rola para o topo da tela Home ao clicar no Home
-                if (item.textContent.includes('Home')) {
-                    homeScreen.scrollTop = 0;
-                }
-                
                 e.preventDefault();
+                const screenId = item.dataset.screen;
+                
+                if (screenId) {
+                    // Atualiza o estado ativo no menu inferior
+                    if(item.classList.contains('nav-item')) {
+                        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                    }
+                    
+                    showScreen(screenId);
+
+                    // Rola para o topo ao navegar para a home
+                    if (screenId === 'home-screen' && homeScreenContent) {
+                        homeScreenContent.scrollTop = 0;
+                    }
+                }
             });
         });
-    </script>
+        
+        // Ação do botão QR Code
+        qrCodeBtn.addEventListener('click', () => {
+            console.log('Botão QR Code clicado. Implementar lógica de câmera.');
+            // Em um app real, aqui você chamaria a API da câmera do dispositivo.
+        });
+    });
+</script>
 
 </body>
 </html>
